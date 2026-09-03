@@ -22,8 +22,20 @@ services:
       POSTGRES_DB: vectordb
     ports:
       - "5432:5432"
-    # volumes:
+    volumes:
     #   - pgvector_data:/var/lib/postgresql/data
+      - ./pg_certs:/pg_certs
+    command: >
+      bash -c "
+        cp /pg_certs/server.key /tmp/server.key &&
+        cp /pg_certs/server.crt /tmp/server.crt &&
+        chown postgres:postgres /tmp/server.key /tmp/server.crt &&
+        chmod 600 /tmp/server.key &&
+        exec docker-entrypoint.sh postgres
+        -c ssl=on
+        -c ssl_cert_file=/tmp/server.crt
+        -c ssl_key_file=/tmp/server.key
+      "
     stdin_open: true
     tty: true
     restart: unless-stopped
