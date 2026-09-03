@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: RAG
+    build: .
+    volumes:
+      - ./src:/app/src
+    stdin_open: true
+    tty: true
+    working_dir: /app
+
+    # Since there is no network, you cannot expose ports.
+    # The container will run isolated from any network.
+
+
+# run with: docker compose up app -d
