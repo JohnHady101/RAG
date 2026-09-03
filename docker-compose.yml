@@ -5,7 +5,7 @@ services:
     container_name: RAG
     build: .
     volumes:
-      - ./src:/app/src
+      - .:/app
     stdin_open: true
     tty: true
     working_dir: /app/src

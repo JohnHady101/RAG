@@ -43,4 +43,4 @@ def pdf_loader(pdf_path: str):
 
 if __name__ == "__main__":
     print(os.getcwd())
-    pdf_loader("annualreport-2025.pdf")
+    pdf_loader("../annualreport-2025.pdf")
