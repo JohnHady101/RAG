@@ -13,5 +13,23 @@ services:
     # Since there is no network, you cannot expose ports.
     # The container will run isolated from any network.
 
+  pgvector:
+    image: pgvector/pgvector:pg16
+    container_name: pgvector_db
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: vectordb
+    ports:
+      - "5432:5432"
+    # volumes:
+    #   - pgvector_data:/var/lib/postgresql/data
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+    # postgresql://myuser:mypassword@localhost:5432/vectordb
+
+
 
 # run with: docker compose up app -d
