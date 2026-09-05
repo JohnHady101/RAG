@@ -1,7 +1,10 @@
 import os
 import tempfile
+
 import fitz  # PyMuPDF
+
 from src.doc_loaders import load_text_file, pdf_loader
+
 
 def test_load_text_file(capsys):
     """Test that text loader runs without errors and prints output."""

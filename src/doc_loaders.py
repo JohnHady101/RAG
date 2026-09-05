@@ -1,13 +1,11 @@
 import os
 import tempfile
-from pathlib import Path
-from langchain_community.document_loaders import (
-    TextLoader,
-    WebBaseLoader,
-    DirectoryLoader,
-    PyMuPDFLoader
-)
+
 from dotenv import load_dotenv
+from langchain_community.document_loaders import (
+    PyMuPDFLoader,
+    TextLoader,
+)
 
 load_dotenv()
 
