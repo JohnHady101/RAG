@@ -1,0 +1,62 @@
+name: Python CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # --- CONTINUOUS INTEGRATION (CI) ---
+  test-and-lint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11"]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install ruff pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Lint with Ruff
+      run: |
+        # Stop the build if there are Python syntax errors or undefined names
+        ruff check --output-format=github .
+
+    - name: Test with pytest
+      run: |
+        pytest tests/ -v
+
+  # --- CONTINUOUS DEPLOYMENT (CD) ---
+  deploy:
+    needs: test-and-lint # Only runs if tests pass
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Deploy / Package Application
+      run: |
+        echo "Deploying application..."
+        # ---------------------------------------------------------
+        # REPLACE THIS SECTION WITH YOUR ACTUAL DEPLOYMENT LOGIC:
+        # Option A: Build and push a Docker image
+        # Option B: Deploy to AWS Lambda / Azure Functions
+        # Option C: Copy files to a server via SSH
+        # Option D: Publish package to PyPI
+        # ---------------------------------------------------------
+        
+        # Example: Zipping the code for an AWS Lambda deployment
+        zip -r deployment_package.zip src/ requirements.txt
+        echo "Deployment package created successfully!"
