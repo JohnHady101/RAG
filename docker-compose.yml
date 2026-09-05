@@ -13,6 +13,7 @@ services:
     # Since there is no network, you cannot expose ports.
     # The container will run isolated from any network.
 
+
   pgvector:
     image: pgvector/pgvector:pg16
     container_name: pgvector_db
@@ -22,25 +23,15 @@ services:
       POSTGRES_DB: vectordb
     ports:
       - "5432:5432"
-    volumes:
+    # volumes:
     #   - pgvector_data:/var/lib/postgresql/data
-      - ./pg_certs:/pg_certs
-    command: >
-      bash -c "
-        cp /pg_certs/server.key /tmp/server.key &&
-        cp /pg_certs/server.crt /tmp/server.crt &&
-        chown postgres:postgres /tmp/server.key /tmp/server.crt &&
-        chmod 600 /tmp/server.key &&
-        exec docker-entrypoint.sh postgres
-        -c ssl=on
-        -c ssl_cert_file=/tmp/server.crt
-        -c ssl_key_file=/tmp/server.key
-      "
     stdin_open: true
     tty: true
     restart: unless-stopped
 
-    # postgresql://myuser:mypassword@localhost:5432/vectordb
+    # postgresql://myuser:mypassword@pgvector:5432/vectordb if connecting from the dev container
+
+
 
 
 

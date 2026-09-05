@@ -3,3 +3,5 @@ pandas
 pymupdf
 pytest
 ruff
+pgvector
+google-genai
