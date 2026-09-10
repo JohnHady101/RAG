@@ -3,6 +3,7 @@ import pgvector
 from pgvector.psycopg2 import register_vector
 import os
 from google import genai
+import json
 
 # ── Config ──────────────────────────────────────────────
 DB_CONFIG = {
@@ -12,8 +13,8 @@ DB_CONFIG = {
     "user": "myuser",
     "password": "mypassword",
 }
-EMBEDDING_MODEL = "text-embedding-004"  # 1536 dimensions
-EMBEDDING_DIM = 1536
+EMBEDDING_MODEL = "gemini-embedding-2"  # 3072 dimensions
+EMBEDDING_DIM = 3072
 API = "API_KEY"
 
 # ── Step 1: Connect & enable pgvector ──────────────────
@@ -30,7 +31,7 @@ conn.commit()
 register_vector(conn)       
 
 # ── Step 2: Create the table (run once) ────────────────
-with open(os.path.dirname(__file__) + "/create_table.sql", "r") as f:
+with open(os.path.dirname(__file__) + "/sql/create_table.sql", "r") as f:
     create_table_sql = f.read()
 
 cur.execute(create_table_sql)
@@ -49,14 +50,14 @@ def get_embedding(text: str) -> list[float]:
 
 # ── Step 4: Insert the document ────────────────────────
 def add_document(text: str, metadata: dict | None = None):
-    embedding = get_embedding(text)
+    embedding = get_embedding(text)[0].values
     cur.execute(
         """
         INSERT INTO documents (content, metadata, embedding)
         VALUES (%s, %s, %s)
         RETURNING id;
         """,
-        (text, metadata or {}, embedding),
+        (text, json.dumps(metadata or {}), embedding),
     )
     doc_id = cur.fetchone()[0]
     conn.commit()
@@ -88,8 +89,7 @@ def add_document(text: str, metadata: dict | None = None):
 # for row in results:
 #     print(f"[{row[3]:.4f}] {row[1][:80]}...")
 
-print(get_embedding("hi there"))
 
 # ── Cleanup ────────────────────────────────────────────
-cur.close()
-conn.close()
+# cur.close()
+# conn.close()

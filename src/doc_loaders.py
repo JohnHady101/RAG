@@ -1,13 +1,10 @@
 import os
 import tempfile
 
-from dotenv import load_dotenv
 from langchain_community.document_loaders import (
     PyMuPDFLoader,
     TextLoader,
 )
-
-load_dotenv()
 
 print("Loading environment variables from .env file...")
 
@@ -32,7 +29,6 @@ def pdf_loader(pdf_path: str):
 
     print(f"loaded {len(documents)} document(s) from PDF")
 
-    print(documents[0])
 
     # for i, doc in enumerate(documents):
         
