@@ -5,3 +5,4 @@ pytest
 ruff
 pgvector
 google-genai
+psycopg2
