@@ -1,5 +1,5 @@
-from doc_loaders import pdf_loader
-from pgvector_try import add_document
+from src.doc_loaders import pdf_loader
+from src.pgvector_try import add_document
 
 
 def insert_documents_from_pdf(pdf_path: str):
