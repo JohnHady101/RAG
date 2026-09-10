@@ -1,7 +1,10 @@
 import os
 import tempfile
+
 import fitz
+
 from src.insertchunks import insert_documents_from_pdf
+
 
 def test_insert_documents_from_pdf(capsys):
     """Test the insert_documents_from_pdf function."""

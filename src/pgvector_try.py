@@ -1,9 +1,9 @@
-import psycopg2
-import pgvector
-from pgvector.psycopg2 import register_vector
-import os
-from google import genai
 import json
+import os
+
+import psycopg2
+from google import genai
+from pgvector.psycopg2 import register_vector
 
 # ── Config ──────────────────────────────────────────────
 DB_CONFIG = {

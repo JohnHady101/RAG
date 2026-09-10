@@ -1,6 +1,7 @@
 from doc_loaders import pdf_loader
 from pgvector_try import add_document
 
+
 def insert_documents_from_pdf(pdf_path: str):
     documents = pdf_loader(pdf_path)
     for i, doc in enumerate(documents):
