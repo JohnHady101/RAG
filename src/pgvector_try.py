@@ -42,9 +42,9 @@ client = genai.Client(api_key= API)
 
 def get_embedding(text: str) -> list[float]:
     result = client.models.embed_content(
-        model="gemini-embedding-2",
-        contents="What is the meaning of life?"
-)
+        model=EMBEDDING_MODEL,
+        contents=text
+    )
 
     return result.embeddings[0].values
 
