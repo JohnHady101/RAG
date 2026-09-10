@@ -1,4 +1,5 @@
 langchain_community== 0.4.2
+langchain-text-splitters
 pandas
 pymupdf
 pytest

@@ -80,9 +80,8 @@ def search(query: str, top_k: int = 3):
     elif isinstance(q_emb, np.ndarray):  # if using numpy
         q_emb = q_emb.tolist()
 
-    q_emb_str = "[" + ",".join(str(float(x)) for x in q_emb) + "]"
+    # q_emb_str = "[" + ",".join(str(float(x)) for x in q_emb) + "]"
     
-
     cur.execute(
         """
         SELECT id, content, metadata,
