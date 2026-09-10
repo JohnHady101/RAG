@@ -32,8 +32,17 @@ def pdf_loader(pdf_path: str):
 
     print(f"loaded {len(documents)} document(s) from PDF")
 
-    for i, doc in enumerate(documents):
-        print(f"document {i+1} content preview: {doc.page_content[:10]}")
-        print(f"metadata: {doc.metadata}")
+    print(documents[0])
+
+    # for i, doc in enumerate(documents):
+        
+    #     if (i == 1):
+    #         print(dir(doc))
+    #     # print(f"document {i+1} content preview: {doc.page_content[:10]}")
+    #     # print(f"metadata: {doc.metadata}")
         
     return documents
+
+if __name__ == "__main__":
+    # the path of a file outside the parent dir of current python file
+    pdf_loader("src/annualreport-2025.pdf")

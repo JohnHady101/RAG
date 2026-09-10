@@ -30,14 +30,10 @@ conn.commit()
 register_vector(conn)       
 
 # ── Step 2: Create the table (run once) ────────────────
-cur.execute(f"""
-    CREATE TABLE IF NOT EXISTS documents (
-        id          SERIAL PRIMARY KEY,
-        content     TEXT NOT NULL,
-        metadata    JSONB DEFAULT '{{}}',
-        embedding   vector({EMBEDDING_DIM})
-    );
-""")
+with open(os.path.dirname(__file__) + "/create_table.sql", "r") as f:
+    create_table_sql = f.read()
+
+cur.execute(create_table_sql)
 conn.commit()
 
 # ── Step 3: Generate an embedding ──────────────────────
