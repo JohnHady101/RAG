@@ -6,9 +6,8 @@ from langchain_community.document_loaders import (
     TextLoader,
 )
 
-print("Loading environment variables from .env file...")
 
-def load_text_file():
+def load_text_file() -> None:
     with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as temp_file:
         temp_file.write(b"This is a sample text file.")
         temp_file_path = temp_file.name
@@ -23,20 +22,12 @@ def load_text_file():
     finally:
         os.remove(temp_file_path)
 
-def pdf_loader(pdf_path: str):
+def pdf_loader(pdf_path: str) -> list:
     loader = PyMuPDFLoader(pdf_path)
     documents = loader.load()
 
     print(f"loaded {len(documents)} document(s) from PDF")
 
-
-    # for i, doc in enumerate(documents):
-        
-    #     if (i == 1):
-    #         print(dir(doc))
-    #     # print(f"document {i+1} content preview: {doc.page_content[:10]}")
-    #     # print(f"metadata: {doc.metadata}")
-        
     return documents
 
 if __name__ == "__main__":

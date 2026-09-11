@@ -3,11 +3,11 @@ import tempfile
 
 import fitz
 
-from src.insertchunks import insert_documents_from_pdf
+from src.ingest import ingest_pdf
 
 
-def test_insert_documents_from_pdf(capsys):
-    """Test the insert_documents_from_pdf function."""
+def test_ingest_pdf(capsys):
+    """Test ingesting a dummy PDF into the vector store."""
     # 1. Create a dummy PDF
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
         doc = fitz.open()
@@ -18,12 +18,13 @@ def test_insert_documents_from_pdf(capsys):
         dummy_pdf_path = tmp.name
 
     try:
-        # 2. Run your function
-        insert_documents_from_pdf(dummy_pdf_path)
-        
+        # 2. Run ingestion
+        ids = ingest_pdf(dummy_pdf_path)
+
         # 3. Assertions
         captured = capsys.readouterr()
-        assert "✅ Inserted document id=" in captured.out
+        assert len(ids) >= 1
+        assert "Inserted document id=" in captured.out
     finally:
         # 4. Cleanup
         os.remove(dummy_pdf_path)
