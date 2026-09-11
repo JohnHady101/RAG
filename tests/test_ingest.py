@@ -1,12 +1,15 @@
 import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import tempfile
-
 import fitz
+from src import ingest
+from _pytest.capture import CaptureFixture
 
-from src.ingest import ingest_pdf
 
-
-def test_ingest_pdf(capsys):
+def test_ingest_pdf(capsys: CaptureFixture):
     """Test ingesting a dummy PDF into the vector store."""
     # 1. Create a dummy PDF
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
@@ -19,7 +22,7 @@ def test_ingest_pdf(capsys):
 
     try:
         # 2. Run ingestion
-        ids = ingest_pdf(dummy_pdf_path)
+        ids = ingest.ingest_pdf(dummy_pdf_path)
 
         # 3. Assertions
         captured = capsys.readouterr()
@@ -28,3 +31,4 @@ def test_ingest_pdf(capsys):
     finally:
         # 4. Cleanup
         os.remove(dummy_pdf_path)
+

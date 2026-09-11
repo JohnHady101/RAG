@@ -18,6 +18,7 @@ jobs:
       pgvector:
         image: pgvector/pgvector:pg16  # or your specific pgvector version
         env:
+          POSTGRES_HOST: localhost
           POSTGRES_USER: myuser
           POSTGRES_PASSWORD: mypassword
           POSTGRES_DB: vectordb
