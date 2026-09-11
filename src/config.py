@@ -8,7 +8,7 @@ import os
 
 # ── Postgres / pgvector ──────────────────────────────────
 DB_CONFIG = {
-    "host": os.environ.get("PGVECTOR_HOST", "pgvector"),
+    "host": os.environ.get("PGVECTOR_HOST", "localhost"),
     "port": int(os.environ.get("PGVECTOR_PORT", "5432")),
     "dbname": os.environ.get("PGVECTOR_DB", "vectordb"),
     "user": os.environ.get("PGVECTOR_USER", "myuser"),
