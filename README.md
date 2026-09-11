@@ -92,7 +92,14 @@ CREATE TABLE IF NOT EXISTS documents (
 
 ## Configuration
 
-All in `src/config.py:1`, overridable via environment:
+All in `src/config.py`, loaded from the environment with `python-dotenv`
+from the repo-root `.env` (see `.env.example`). Precedence: real
+environment variables override `.env`; hardcoded values are last-resort
+defaults. `.env` is gitignored — never commit secrets.
+
+```bash
+cp .env.example .env   # then fill in GEMINI_API_KEY
+```
 
 | Variable | Default | Description |
 |----------|---------|-------------|
@@ -101,13 +108,17 @@ All in `src/config.py:1`, overridable via environment:
 | `PGVECTOR_DB` | `vectordb` | |
 | `PGVECTOR_USER` | `myuser` | |
 | `PGVECTOR_PASSWORD` | `mypassword` | |
-| `GEMINI_API_KEY` | *(dev fallback in code)* | **set this in env, do not commit a key** |
+| `GEMINI_API_KEY` | *(empty, required)* | **set in `.env`, do not commit a key** |
 | `EMBEDDING_MODEL` | `gemini-embedding-2` | |
 | `EMBEDDING_DIM` | `3072` | must match `vector(3072)` |
 | `GENERATION_MODEL` | `gemini-3.6-flash` | |
 | `CHUNK_SIZE` | `1000` | |
 | `CHUNK_OVERLAP` | `200` | |
-| `RAG_PDF_PATH` | `<repo>/data/annualreport-2025.pdf` | default ingest target |
+| `RAG_PDF_PATH` | `<repo>/data/annualreport-2025.pdf` | default ingest target (repo-relative paths resolve against repo root) |
+
+`docker-compose.yml` passes `.env` to the `app` service via `env_file`
+(and forces `PGVECTOR_HOST=pgvector` there); the `pgvector` service reads
+`POSTGRES_*` from the same file with `myuser/mypassword/vectordb` fallbacks.
 
 ## Quickstart
 
@@ -126,19 +137,18 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 3. Set environment
+### 3. Set environment (`.env`)
 
 ```powershell
-$env:GEMINI_API_KEY="your-key-here"
-# outside Docker, point at localhost:
-$env:PGVECTOR_HOST="localhost"
+Copy-Item .env.example .env
+# edit .env: set GEMINI_API_KEY, and for local runs set PGVECTOR_HOST=localhost
 ```
 
 Linux/macOS:
 
 ```bash
-export GEMINI_API_KEY="your-key-here"
-export PGVECTOR_HOST="localhost"
+cp .env.example .env   # then fill in GEMINI_API_KEY
+# PGVECTOR_HOST=localhost for local runs (Compose overrides it to pgvector)
 ```
 
 ### 4. Ingest the PDF
@@ -186,12 +196,12 @@ ruff check .
 ## Dependencies (`requirements.txt`)
 
 - `langchain_community==0.4.2`, `langchain-text-splitters`, `pandas`, `pymupdf`
-- `pgvector`, `psycopg2`, `google-genai`
+- `pgvector`, `psycopg2`, `google-genai`, `python-dotenv`
 - `pytest`, `ruff`
 
 ## Notes / Limitations
 
 - `add_documents()` embeds + inserts one row per chunk sequentially — fine for a single report, slow for large corpora (no batching).
 - No hybrid search, reranking, or eval harness — pure dense cosine (`<=>`).
-- `config.py` contains a hardcoded fallback `GEMINI_API_KEY` for local dev — override it via env in any shared/deployed environment.
+- No hardcoded secrets: `GEMINI_API_KEY` must come from `.env` or the environment.
 - pgvector data is ephemeral in Compose (volume commented out in `docker-compose.yml`).

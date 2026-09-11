@@ -9,6 +9,11 @@ services:
     stdin_open: true
     tty: true
     working_dir: /app
+    env_file:
+      - .env
+    environment:
+      # Inside Compose the DB is reachable via the service name.
+      PGVECTOR_HOST: pgvector
 
     # Since there is no network, you cannot expose ports.
     # The container will run isolated from any network.
@@ -18,9 +23,9 @@ services:
     image: pgvector/pgvector:pg16
     container_name: pgvector_db
     environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-      POSTGRES_DB: vectordb
+      POSTGRES_USER: ${PGVECTOR_USER:-myuser}
+      POSTGRES_PASSWORD: ${PGVECTOR_PASSWORD:-mypassword}
+      POSTGRES_DB: ${PGVECTOR_DB:-vectordb}
     ports:
       - "5432:5432"
     # volumes:
