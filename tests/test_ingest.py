@@ -4,9 +4,11 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import tempfile
+
 import fitz
-from src import ingest
 from _pytest.capture import CaptureFixture
+
+from src import ingest
 
 
 def test_ingest_pdf(capsys: CaptureFixture):
@@ -31,4 +33,3 @@ def test_ingest_pdf(capsys: CaptureFixture):
     finally:
         # 4. Cleanup
         os.remove(dummy_pdf_path)
-
