@@ -9,6 +9,10 @@ import fitz
 from _pytest.capture import CaptureFixture
 
 from src import ingest
+<<<<<<< HEAD
+=======
+
+>>>>>>> ruff
 
 
 def test_ingest_pdf(capsys: CaptureFixture, monkeypatch):

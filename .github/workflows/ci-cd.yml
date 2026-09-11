@@ -2,9 +2,9 @@ name: Python CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "ruff" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "ruff" ]
 
 jobs:
   # --- CONTINUOUS INTEGRATION (CI) ---
