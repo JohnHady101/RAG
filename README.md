@@ -93,28 +93,30 @@ CREATE TABLE IF NOT EXISTS documents (
 ## Configuration
 
 All in `src/config.py`, loaded from the environment with `python-dotenv`
-from the repo-root `.env` (see `.env.example`). Precedence: real
-environment variables override `.env`; hardcoded values are last-resort
-defaults. `.env` is gitignored — never commit secrets.
+from the repo-root `.env` (see `.env.example`). Single source of truth:
+`.env` / real environment. `config.py` holds **no default values** — a
+missing variable raises `RuntimeError` naming it instead of silently
+falling back. Precedence: real environment variables override `.env`.
+`.env` is gitignored — never commit secrets.
 
 ```bash
 cp .env.example .env   # then fill in GEMINI_API_KEY
 ```
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `PGVECTOR_HOST` | `pgvector` | use `localhost` outside Docker, `pgvector` inside Compose |
-| `PGVECTOR_PORT` | `5432` | |
-| `PGVECTOR_DB` | `vectordb` | |
-| `PGVECTOR_USER` | `myuser` | |
-| `PGVECTOR_PASSWORD` | `mypassword` | |
-| `GEMINI_API_KEY` | *(empty, required)* | **set in `.env`, do not commit a key** |
-| `EMBEDDING_MODEL` | `gemini-embedding-2` | |
-| `EMBEDDING_DIM` | `3072` | must match `vector(3072)` |
-| `GENERATION_MODEL` | `gemini-3.6-flash` | |
-| `CHUNK_SIZE` | `1000` | |
-| `CHUNK_OVERLAP` | `200` | |
-| `RAG_PDF_PATH` | `<repo>/data/annualreport-2025.pdf` | default ingest target (repo-relative paths resolve against repo root) |
+| Variable | Set in | Description |
+|----------|--------|-------------|
+| `PGVECTOR_HOST` | `.env.example` | use `localhost` outside Docker, `pgvector` inside Compose |
+| `PGVECTOR_PORT` | `.env.example` | |
+| `PGVECTOR_DB` | `.env.example` | |
+| `PGVECTOR_USER` | `.env.example` | |
+| `PGVECTOR_PASSWORD` | `.env.example` | |
+| `GEMINI_API_KEY` | you (no default) | **set in `.env`, do not commit a key** |
+| `EMBEDDING_MODEL` | `.env.example` | |
+| `EMBEDDING_DIM` | `.env.example` | must match `vector(3072)` |
+| `GENERATION_MODEL` | `.env.example` | |
+| `CHUNK_SIZE` | `.env.example` | |
+| `CHUNK_OVERLAP` | `.env.example` | |
+| `RAG_PDF_PATH` | `.env.example` | default ingest target (repo-relative paths resolve against repo root) |
 
 `docker-compose.yml` passes `.env` to the `app` service via `env_file`
 (and forces `PGVECTOR_HOST=pgvector` there); the `pgvector` service reads
@@ -191,7 +193,7 @@ ruff check .
 - `pytest.ini`: `pythonpath = src`
 - `tests/test_chunking.py`, `test_doc_loaders.py`: create dummy PDFs with PyMuPDF, no DB/API needed
 - `tests/test_ingest.py`: monkeypatches `init_db` / `add_documents`
-- CI (`.github/workflows/ci-cd.yml`): spins up `pgvector/pgvector:pg16` service, runs `ruff check` + `pytest`, zips `src/ + requirements.txt` to `deployment_package.zip` on `main` push.
+- CI (`.github/workflows/ci-cd.yml`): spins up `pgvector/pgvector:pg16` service, copies `.env.example` → `.env` for non-secret defaults, injects only `GEMINI_API_KEY` (from GitHub Secrets) + `PGVECTOR_HOST=localhost`, then runs `ruff check` + `pytest`. Zips `src/ + requirements.txt` to `deployment_package.zip` on `main` push.
 
 ## Dependencies (`requirements.txt`)
 

@@ -48,13 +48,14 @@ jobs:
         # Stop the build if there are Python syntax errors or undefined names
         ruff check --output-format=github .
 
+    - name: Load non-secret defaults
+      run: cp .env.example .env
+
     - name: Test with pytest
       env:
+        # Overrides for CI: no Compose network, and the one real secret.
         PGVECTOR_HOST: localhost
-        PGVECTOR_PORT: 5432
-        PGVECTOR_DB: vectordb
-        PGVECTOR_USER: myuser
-        PGVECTOR_PASSWORD: mypassword
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       run: |
         pytest tests/ -v
 

@@ -1,40 +1,62 @@
 """Central configuration for the RAG pipeline.
 
-Every value is loaded from the environment, with local-dev defaults in
-`.env` (see `.env.example`). python-dotenv loads that file automatically,
-so `export`ing variables manually is not required for local runs.
+Single source of truth: the environment, loaded from the repo-root
+`.env` (see `.env.example`). This module holds NO default values —
+a missing variable fails fast with a clear error instead of silently
+using a stale hardcoded fallback.
 """
 
 import os
 
 from dotenv import load_dotenv
 
-# Load `<repo>/.env` (no-op if the file is missing, e.g. in CI).
+# Load `<repo>/.env` (no-op if the file is missing, e.g. in CI where
+# variables come from the real environment instead).
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
+
+
+def _required(name: str) -> str:
+    value = os.environ.get(name)
+    if value is None or value == "":
+        raise RuntimeError(
+            f"Missing required config {name!r}: set it in `.env` "
+            f"(see `.env.example`) or export it."
+        )
+    return value
+
+
+def _required_int(name: str) -> int:
+    raw = _required(name)
+    try:
+        return int(raw)
+    except ValueError:
+        raise RuntimeError(
+            f"Invalid config {name!r}={raw!r}: expected an integer."
+        ) from None
+
 
 # ── Postgres / pgvector ──────────────────────────────────
 DB_CONFIG = {
-    "host": os.environ.get("PGVECTOR_HOST", "pgvector"),
-    "port": int(os.environ.get("PGVECTOR_PORT", "5432")),
-    "dbname": os.environ.get("PGVECTOR_DB", "vectordb"),
-    "user": os.environ.get("PGVECTOR_USER", "myuser"),
-    "password": os.environ.get("PGVECTOR_PASSWORD", "mypassword"),
+    "host": _required("PGVECTOR_HOST"),
+    "port": _required_int("PGVECTOR_PORT"),
+    "dbname": _required("PGVECTOR_DB"),
+    "user": _required("PGVECTOR_USER"),
+    "password": _required("PGVECTOR_PASSWORD"),
 }
 
 # ── Gemini ───────────────────────────────────────────────
-# No hardcoded fallback: set GEMINI_API_KEY in `.env` or the environment.
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-EMBEDDING_MODEL = os.environ.get("EMBEDDING_MODEL", "gemini-embedding-2")
-EMBEDDING_DIM = int(os.environ.get("EMBEDDING_DIM", "3072"))
-GENERATION_MODEL = os.environ.get("GENERATION_MODEL", "gemini-3.6-flash")
+GEMINI_API_KEY = _required("GEMINI_API_KEY")
+EMBEDDING_MODEL = _required("EMBEDDING_MODEL")
+EMBEDDING_DIM = _required_int("EMBEDDING_DIM")
+GENERATION_MODEL = _required("GENERATION_MODEL")
 
 # ── Chunking ─────────────────────────────────────────────
-CHUNK_SIZE = int(os.environ.get("CHUNK_SIZE", "1000"))
-CHUNK_OVERLAP = int(os.environ.get("CHUNK_OVERLAP", "200"))
+CHUNK_SIZE = _required_int("CHUNK_SIZE")
+CHUNK_OVERLAP = _required_int("CHUNK_OVERLAP")
 
 # ── Data ─────────────────────────────────────────────────
 _REPO_ROOT = os.path.dirname(os.path.dirname(__file__))
-_pdf_path = os.environ.get("RAG_PDF_PATH", os.path.join(_REPO_ROOT, "data", "annualreport-2025.pdf"))
+_pdf_path = _required("RAG_PDF_PATH")
 # Resolve repo-relative paths (e.g. `data/annualreport-2025.pdf` from `.env`)
 # against the repo root so the CLI works from any cwd.
 PDF_PATH = _pdf_path if os.path.isabs(_pdf_path) else os.path.join(_REPO_ROOT, _pdf_path)
