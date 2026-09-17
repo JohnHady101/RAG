@@ -8,3 +8,4 @@ pgvector
 google-genai
 psycopg2
 python-dotenv
+transformers

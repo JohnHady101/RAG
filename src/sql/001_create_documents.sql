@@ -4,3 +4,7 @@ CREATE TABLE IF NOT EXISTS documents (
     metadata    JSONB DEFAULT '{}',
     embedding   vector(3072)
 );
+
+-- SELECT * FROM documents;
+
+-- DROP TABLE IF EXISTS documents;

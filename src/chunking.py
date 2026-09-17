@@ -1,5 +1,13 @@
 """Split loaded documents into overlapping chunks for retrieval."""
 
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(1, os.path.dirname(os.path.abspath(__file__)))
+
+
+
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
@@ -34,3 +42,7 @@ def create_knowledge_base(
 
     print(f"split {len(documents)} page(s) into {len(chunks)} chunk(s)")
     return chunks
+
+if __name__ == "__main__":
+    # the path of a file outside the parent dir of current python file
+    create_knowledge_base("data/annualreport-2025.pdf")
