@@ -3,7 +3,7 @@
 from config import GENERATION_MODEL
 from db import init_db
 from embeddings import get_client
-from vector_store import search
+from src.ingestion.vector_store import search
 
 
 def retrieve(query: str, top_k: int = 5):

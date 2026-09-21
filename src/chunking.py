@@ -3,8 +3,8 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.insert(1, os.path.dirname(os.path.abspath(__file__)))
+# sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# sys.path.insert(1, os.path.dirname(os.path.abspath(__file__)))
 
 
 
@@ -23,7 +23,7 @@ def create_knowledge_base(
     """Load a PDF and split it into overlapping text chunks.
 
     Args:
-        pdf_path: Path to the PDF file to chunk.
+        pdf_path: Path to the PDF file t o chunk.
         chunk_size: Maximum size of each chunk in characters.
         chunk_overlap: Overlapping characters between consecutive
             chunks (preserves context across boundaries).
@@ -43,6 +43,6 @@ def create_knowledge_base(
     print(f"split {len(documents)} page(s) into {len(chunks)} chunk(s)")
     return chunks
 
-if __name__ == "__main__":
+if __name__ ==  "__main__":
     # the path of a file outside the parent dir of current python file
     create_knowledge_base("data/annualreport-2025.pdf")

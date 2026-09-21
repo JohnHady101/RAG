@@ -2,14 +2,14 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.insert(1, os.path.dirname(os.path.abspath(__file__)))
+# sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# sys.path.insert(1, os.path.dirname(os.path.abspath(__file__)))
 
 
 from chunking import create_knowledge_base
 from config import CHUNK_OVERLAP, CHUNK_SIZE
 from db import init_db
-from vector_store import add_documents
+from src.ingestion.vector_store import add_documents
 
 
 def ingest_pdf(
@@ -34,3 +34,4 @@ def ingest_pdf(
     if limit is not None:
         chunks = chunks[:limit]
     return add_documents(chunks)
+ 

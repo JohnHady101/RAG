@@ -13,7 +13,7 @@ import argparse
 from config import EMBEDDING_MODEL, GENERATION_MODEL, PDF_PATH
 from db import get_cursor, init_db
 from embeddings import get_client, get_embedding
-from ingest import ingest_pdf
+from src.ingestion.ingest import ingest_pdf
 from qa import answer_question, retrieve
 
 
@@ -134,6 +134,7 @@ def main(argv=None) -> None:
     p_ingest.add_argument("pdf", nargs="?", default=PDF_PATH)
     p_ingest.add_argument("--limit", type=int, default=None)
     p_ingest.set_defaults(func=_cmd_ingest)
+    # command would be: python src/main.py ingest data/annualreport-2025.pdf
 
     p_query = sub.add_parser("query", help="print top-k similar chunks")
     p_query.add_argument("question")

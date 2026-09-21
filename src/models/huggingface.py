@@ -13,4 +13,5 @@ def vectorize_texts(texts):
     embeddings = outputs.last_hidden_state.mean(dim=1)
     return embeddings
 
-print(vectorize_texts(["Hello, world!", "How are you?"]))
+if __name__ == "__main__":
+    print(vectorize_texts(["Hello, world!", "How are you?"]))

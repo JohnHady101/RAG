@@ -1,12 +1,14 @@
-"""Text embeddings via the Gemini API.
+"""Text embeddings via the local HuggingFace model.
 
-The client is created lazily so importing this module never needs
-network access or an API key.
+The Gemini client is still created lazily for answer generation
+(`get_client`); only the embedding path uses HuggingFace so importing
+this module never needs network access or an API key.
 """
 
 from google import genai
 
-from config import EMBEDDING_MODEL, GEMINI_API_KEY
+from config import GEMINI_API_KEY
+from models.huggingface import vectorize_texts
 
 _client = None
 
@@ -20,9 +22,22 @@ def get_client():
 
 
 def get_embedding(text: str) -> list[float]:
-    """Embed a single text and return its vector (length EMBEDDING_DIM)."""
-    result = get_client().models.embed_content(
-        model=EMBEDDING_MODEL,
-        contents=text,
-    )
-    return result.embeddings[0].values
+    """Embed a single text with the local HF model and return its vector."""
+    embeddings = vectorize_texts([text])
+    vec = embeddings[0]
+    if hasattr(vec, "detach"):
+        vec = vec.detach()
+    if hasattr(vec, "cpu"):
+        try:
+            vec = vec.cpu()
+        except Exception:
+            pass
+    if hasattr(vec, "tolist"):
+        vec = vec.tolist()
+    return [float(x) for x in vec]
+
+if __name__ == "__main__":
+    # test embedding a single text
+    text = "Hello, world!"
+    embedding = get_embedding(text)
+    print(f"embedding for '{text}': {embedding[:5]}... (length={len(embedding)})")

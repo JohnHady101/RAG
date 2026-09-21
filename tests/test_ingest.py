@@ -8,7 +8,7 @@ import tempfile
 import fitz
 from _pytest.capture import CaptureFixture
 
-from src import ingest
+from ingestion import ingest
 
 
 def test_ingest_pdf(capsys: CaptureFixture, monkeypatch):

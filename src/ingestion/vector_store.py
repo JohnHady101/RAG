@@ -15,7 +15,7 @@ def add_document(text: str, metadata: dict | None = None) -> int:
     cur.execute(
         """
         INSERT INTO documents (content, metadata, embedding)
-        VALUES (%s, %s, %s)
+        VALUES (%s, %s, %s) 
         RETURNING id;
         """,
         (text, json.dumps(metadata or {}), embedding),
@@ -26,10 +26,10 @@ def add_document(text: str, metadata: dict | None = None) -> int:
     return doc_id
 
 
-def add_documents(documents) -> list[int]:
+def add_documents(chunks) -> list[int]:
     """Store many langchain Documents (page_content + metadata)."""
     return [
-        add_document(doc.page_content, metadata=doc.metadata) for doc in documents
+        add_document(doc.page_content, metadata=doc.metadata) for doc in chunks
     ]
 
 

@@ -8,6 +8,8 @@ RUN apt update
 
 COPY ./requirements.txt ./requirements.txt
 
+RUN pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cu126
+
 
 # Activate virtual environment and install Python requirements
 # Note: We need to ensure the venv's pip is used

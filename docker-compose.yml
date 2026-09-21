@@ -14,6 +14,13 @@ services:
     environment:
       # Inside Compose the DB is reachable via the service name.
       PGVECTOR_HOST: pgvector
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
 
     # Since there is no network, you cannot expose ports.
     # The container will run isolated from any network.
