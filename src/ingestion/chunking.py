@@ -11,8 +11,11 @@ import sys
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
+# Install the required packages:
+# python -m pip install langchain-core langchain-text-splitters
+
 from config import CHUNK_OVERLAP, CHUNK_SIZE
-from doc_loaders import pdf_loader
+from src.ingestion.doc_loaders import pdf_loader
 
 
 def create_knowledge_base(

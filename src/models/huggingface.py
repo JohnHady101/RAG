@@ -8,10 +8,14 @@ model = AutoModel.from_pretrained("BAAI/bge-large-en-v1.5", device_map="auto")
 # vectorize a list of texts
 def vectorize_texts(texts):
     inputs = tokenizer(texts, padding=True, truncation=True, return_tensors="pt")
+
+    # FIX: Move all input tensors to the same device as the model
+    inputs = {k: v.to("cuda") for k, v in inputs.items()}
+    
     with torch.no_grad():
         outputs = model(**inputs)
     embeddings = outputs.last_hidden_state.mean(dim=1)
     return embeddings
-
+ 
 if __name__ == "__main__":
     print(vectorize_texts(["Hello, world!", "How are you?"]))

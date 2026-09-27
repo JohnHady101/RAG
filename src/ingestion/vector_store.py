@@ -5,7 +5,7 @@ import json
 import numpy as np
 
 from db import get_cursor
-from embeddings import get_embedding
+from src.models.embeddings import get_embedding
 
 
 def add_document(text: str, metadata: dict | None = None) -> int:
@@ -56,5 +56,25 @@ def search(query: str, top_k: int = 3):
         LIMIT %s;
         """,
         (q_emb, q_emb, top_k),
+    )
+    return cur.fetchall()
+
+def bm25engine(query: str, top_k: int = 3):
+    """Return the top_k rows most similar to the query using BM25.
+
+    Each row is (id, content, metadata, similarity) with BM25
+    similarity score.
+    """
+    cur = get_cursor()
+    cur.execute(
+        """
+        SELECT id, content, metadata,
+               ts_rank_cd(to_tsvector('english', content), plainto_tsquery('english', %s)) AS similarity
+        FROM documents
+        WHERE to_tsvector('english', content) @@ plainto_tsquery('english', %s)
+        ORDER BY similarity DESC
+        LIMIT %s;
+        """,
+        (query, query, top_k),
     )
     return cur.fetchall()

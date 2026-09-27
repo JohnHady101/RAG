@@ -4,14 +4,16 @@ The Gemini client is still created lazily for answer generation
 (`get_client`); only the embedding path uses HuggingFace so importing
 this module never needs network access or an API key.
 """
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from google import genai
-
-from config import GEMINI_API_KEY
+from src.config import GEMINI_API_KEY
 from models.huggingface import vectorize_texts
 
 _client = None
-
 
 def get_client():
     """Return a shared genai client, creating it on first use."""

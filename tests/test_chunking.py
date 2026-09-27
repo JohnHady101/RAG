@@ -5,7 +5,7 @@ import tempfile
 
 import fitz
 
-from src.chunking import create_knowledge_base
+from src.ingestion.chunking import create_knowledge_base
 
 
 def _make_pdf(text: str) -> str:

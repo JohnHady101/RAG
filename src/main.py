@@ -12,8 +12,8 @@ import argparse
 
 from config import EMBEDDING_MODEL, GENERATION_MODEL, PDF_PATH
 from db import get_cursor, init_db
-from embeddings import get_client, get_embedding
-from src.ingestion.ingest import ingest_pdf
+from models.embeddings import get_embedding
+from ingestion.ingest import ingest_pdf
 from qa import answer_question, retrieve
 
 
@@ -121,7 +121,7 @@ def run_demo(question: str, top_k: int = 5, show_prompt: bool = False) -> str:
 
 
 def _cmd_demo(args) -> None:
-    run_demo(args.question, top_k=args.top_k, show_prompt=args.show_prompt)
+    run_demo(args.question, top_k=args.top_k, show_prompt= args.show_prompt)
 
 
 def main(argv=None) -> None:
@@ -145,6 +145,7 @@ def main(argv=None) -> None:
     p_ask.add_argument("question")
     p_ask.add_argument("--top-k", type=int, default=5)
     p_ask.set_defaults(func=_cmd_ask)
+    # command would be: python src/main.py ask "What is the revenue for 2025?" --top-k 3
 
     p_demo = sub.add_parser(
         "demo",

@@ -2,7 +2,7 @@
 
 from config import GENERATION_MODEL
 from db import init_db
-from embeddings import get_client
+from src.models.embeddings import get_client
 from src.ingestion.vector_store import search
 
 

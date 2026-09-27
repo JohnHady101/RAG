@@ -3,7 +3,7 @@ import tempfile
 
 import fitz  # PyMuPDF
 
-from src.doc_loaders import load_text_file, pdf_loader
+from src.ingestion.doc_loaders import load_text_file, pdf_loader
 
 
 def test_load_text_file(capsys):
