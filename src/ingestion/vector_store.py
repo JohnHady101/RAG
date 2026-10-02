@@ -4,7 +4,7 @@ import json
 
 import numpy as np
 
-from db import get_cursor
+from db import _load_sql, get_cursor
 from src.models.embeddings import get_embedding
 
 
@@ -46,35 +46,34 @@ def search(query: str, top_k: int = 3):
     elif isinstance(q_emb, np.ndarray):
         q_emb = q_emb.tolist()
 
-    cur = get_cursor()
-    cur.execute(
-        """
-        SELECT id, content, metadata,
-               1 - (embedding <=> %s::vector) AS similarity
-        FROM documents
-        ORDER BY embedding <=> %s::vector
-        LIMIT %s;
-        """,
-        (q_emb, q_emb, top_k),
-    )
-    return cur.fetchall()
+    # cur = get_cursor()
+    # cur.execute(
+    #     """
+    #     SELECT id, content, metadata,
+    #            1 - (embedding <=> %s::vector) AS similarity
+    #     FROM documents
+    #     ORDER BY embedding <=> %s::vector
+    #     LIMIT %s;
+    #     """,
+    #     (q_emb, q_emb, top_k),
+    # )
+    return bm25_search(query, top_k=top_k)
+    # return cur.fetchall()
 
-def bm25engine(query: str, top_k: int = 3):
-    """Return the top_k rows most similar to the query using BM25.
 
-    Each row is (id, content, metadata, similarity) with BM25
-    similarity score.
+def bm25_search(query: str, top_k: int = 5):
+    """Return the top_k rows matching query via full-text search.
+
+    Runs src/sql/bm25_search.sql (ts_rank over content_tsv with
+    websearch_to_tsquery). Postgres approximates BM25-style ranking
+    here via ts_rank; for true Okapi BM25 use the pg_bm25 extension.
+
+    Each row is (id, content, metadata, score) with score from
+    ts_rank (higher = more relevant). Returns [] when nothing matches.
     """
+    if not query or not query.strip():
+        return []
     cur = get_cursor()
-    cur.execute(
-        """
-        SELECT id, content, metadata,
-               ts_rank_cd(to_tsvector('english', content), plainto_tsquery('english', %s)) AS similarity
-        FROM documents
-        WHERE to_tsvector('english', content) @@ plainto_tsquery('english', %s)
-        ORDER BY similarity DESC
-        LIMIT %s;
-        """,
-        (query, query, top_k),
-    )
+    cur.execute(_load_sql("bm25_search.sql"), (query, top_k))
     return cur.fetchall()
+

@@ -46,6 +46,7 @@ services:
     restart: unless-stopped
 
     # postgresql://myuser:mypassword@pgvector:5432/vectordb if connecting from the dev container
+    # postgresql://myuser:mypassword@localhost:5432/vectordb if connecting from the host machine
 
 
 

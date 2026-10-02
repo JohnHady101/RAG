@@ -14,6 +14,14 @@ from config import DB_CONFIG
 
 _conn = None
 
+_SQL_DIR = os.path.join(os.path.dirname(__file__), "sql")
+
+
+def _load_sql(filename: str) -> str:
+    """Load a SQL file from src/sql/."""
+    with open(os.path.join(_SQL_DIR, filename)) as f:
+        return f.read()
+
 
 def get_conn():
     """Return a shared connection, creating it on first use."""
@@ -30,15 +38,15 @@ def get_cursor():
 
 
 def init_db() -> None:
-    """Create the pgvector extension and tables (idempotent)."""
+    """Create the pgvector extension, tables, and BM25 index (idempotent)."""
     conn = get_conn()
     cur = conn.cursor()
     cur.execute("CREATE EXTENSION IF NOT EXISTS vector;")
     conn.commit()
 
-    sql_path = os.path.join(os.path.dirname(__file__), "sql", "001_create_documents.sql")
-    with open(sql_path) as f:
-        cur.execute(f.read())
+    cur.execute(_load_sql("001_create_documents.sql"))
+    conn.commit()
+    cur.execute(_load_sql("add_vector_col.sql"))
     conn.commit()
     cur.close()
 

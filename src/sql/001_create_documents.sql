@@ -7,4 +7,5 @@ CREATE TABLE IF NOT EXISTS documents (
 
 SELECT * FROM documents;
 
+-- explain analyze SELECT * FROM documents where id = 120;
 -- DROP TABLE IF EXISTS documents;

@@ -3,13 +3,13 @@
 from config import GENERATION_MODEL
 from db import init_db
 from src.models.embeddings import get_client
-from src.ingestion.vector_store import search
+from src.ingestion.vector_store import bm25_search, search
 
 
 def retrieve(query: str, top_k: int = 5):
     """Return the top_k most similar stored chunks for a query."""
     init_db()
-    return search(query, top_k=top_k)
+    return bm25_search(query, top_k=top_k)
 
 
 def answer_question(query: str, top_k: int = 5) -> str:
