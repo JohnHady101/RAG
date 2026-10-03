@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAG — Ask your PDFs</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>RAG Q&amp;A</h1>
+      <p class="subtitle">PDF &rarr; pgvector &rarr; Gemini grounded answers</p>
+      <div id="health" class="health" data-state="checking">checking backend…</div>
+    </header>
+
+    <form id="ask-form">
+      <label for="question">Question</label>
+      <textarea
+        id="question"
+        name="question"
+        rows="3"
+        placeholder='e.g. What was revenue in 2025?'
+        required
+      ></textarea>
+
+      <div class="row">
+        <div>
+          <label for="top-k">Top K chunks</label>
+          <input id="top-k" name="top_k" type="number" min="1" max="50" value="5" />
+        </div>
+        <div class="actions">
+          <button id="ask-btn" type="submit">Ask</button>
+          <button id="clear-btn" type="button" class="secondary">Clear</button>
+        </div>
+      </div>
+      <p id="error" class="error" hidden></p>
+    </form>
+
+    <section id="result" hidden>
+      <h2>Answer</h2>
+      <div id="answer" class="answer"></div>
+      <h3>Sources <span id="source-count"></span></h3>
+      <ul id="sources" class="sources"></ul>
+    </section>
+
+    <section id="history-wrap">
+      <h2>History</h2>
+      <ul id="history" class="history"></ul>
+    </section>
+  </main>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>
