@@ -57,8 +57,8 @@ def search(query: str, top_k: int = 3):
     #     """,
     #     (q_emb, q_emb, top_k),
     # )
-    return bm25_search(query, top_k=top_k)
     # return cur.fetchall()
+    return bm25_search(query, top_k=top_k)
 
 
 def bm25_search(query: str, top_k: int = 5):
